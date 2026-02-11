@@ -1,4 +1,4 @@
-use std::mem;
+use std::{mem, ops::Deref};
 
 use crate::{ColorMode, Error};
 
@@ -314,9 +314,12 @@ pub(crate) struct ConfigContainer {
 impl ConfigContainer {
     pub fn new(config: &EncodingConfig) -> Result<Self, Error> {
         let mut webp_config = unsafe {
-            let mut config = mem::zeroed();
-            webp::WebPConfigInit(&mut config);
-            config
+            let mut cfg = mem::zeroed();
+            let ok = webp::WebPConfigInit(&mut cfg);
+            if ok == 0 {
+                return Err(Error::InvalidEncodingConfig);
+            }
+            cfg
         };
 
         config.apply_to(&mut webp_config);
@@ -329,8 +332,12 @@ impl ConfigContainer {
             config: webp_config,
         })
     }
+}
 
-    pub fn as_ptr(&self) -> &webp::WebPConfig {
+impl Deref for ConfigContainer {
+    type Target = webp::WebPConfig;
+
+    fn deref(&self) -> &Self::Target {
         &self.config
     }
 }
@@ -338,18 +345,17 @@ impl ConfigContainer {
 #[cfg(test)]
 mod tests {
     use super::*;
-
     #[test]
     fn test_config_defaults() {
         let default_webp_config = unsafe {
             let mut config = mem::zeroed();
-            webp::WebPConfigInit(&mut config);
+            assert_ne!(webp::WebPConfigInit(&mut config), 0);
             config
         };
 
         let config = ConfigContainer::new(&EncodingConfig::default()).unwrap();
 
-        let left = config.as_ptr();
+        let left = &*config;
         let def = &default_webp_config;
 
         // custom-set

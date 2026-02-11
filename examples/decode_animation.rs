@@ -8,16 +8,18 @@ fn main() {
     let decoder = Decoder::new(&buffer).unwrap();
 
     for frame in decoder.into_iter() {
-        assert_eq!(frame.dimensions(), (400, 400));
-        assert_eq!(frame.data().len(), 400 * 400 * 4); // w * h * rgba
+        #[cfg(feature = "image")]
+        let (dimensions, data_len) = {
+            let dims = frame.dimensions();
+            let len = frame.data().len();
+            let image = frame.into_image().unwrap();
+            assert_eq!(image.dimensions(), (400, 400));
+            (dims, len)
+        };
 
-        #[cfg(features = "image")]
-        assert_eq!(frame.into_image().unwrap().dimensions(), (400, 400));
+        #[cfg(not(feature = "image"))]
+        let (dimensions, data_len) = { (frame.dimensions(), frame.data().len()) };
 
-        info!(
-            "Frame, dimensions={:?}, data_len={}",
-            frame.dimensions(),
-            frame.data().len()
-        );
+        info!("Frame, dimensions={:?}, data_len={}", dimensions, data_len);
     }
 }
