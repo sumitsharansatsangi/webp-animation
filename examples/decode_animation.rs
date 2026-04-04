@@ -11,7 +11,7 @@ fn main() {
         assert_eq!(frame.dimensions(), (400, 400));
         assert_eq!(frame.data().len(), 400 * 400 * 4); // w * h * rgba
 
-        #[cfg(features = "image")]
+        #[cfg(feature = "image")]
         assert_eq!(frame.into_image().unwrap().dimensions(), (400, 400));
 
         info!(

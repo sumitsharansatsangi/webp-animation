@@ -24,7 +24,11 @@ impl WebPData {
     }
 
     fn as_slice(&self) -> &[u8] {
-        unsafe { slice::from_raw_parts(self.data.bytes, self.data.size) }
+        if self.data.bytes.is_null() {
+            &[]
+        } else {
+            unsafe { slice::from_raw_parts(self.data.bytes, self.data.size) }
+        }
     }
 }
 

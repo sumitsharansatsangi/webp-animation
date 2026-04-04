@@ -315,7 +315,9 @@ impl ConfigContainer {
     pub fn new(config: &EncodingConfig) -> Result<Self, Error> {
         let mut webp_config = unsafe {
             let mut config = mem::zeroed();
-            webp::WebPConfigInit(&mut config);
+            if webp::WebPConfigInit(&mut config) == 0 {
+                return Err(Error::InvalidEncodingConfig);
+            }
             config
         };
 
@@ -343,7 +345,7 @@ mod tests {
     fn test_config_defaults() {
         let default_webp_config = unsafe {
             let mut config = mem::zeroed();
-            webp::WebPConfigInit(&mut config);
+            assert_ne!(webp::WebPConfigInit(&mut config), 0);
             config
         };
 
