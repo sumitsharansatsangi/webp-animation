@@ -321,7 +321,7 @@ mod tests {
     fn test_decode_to_image() {
         use std::io::Cursor;
 
-        use image::{codecs::png::PngDecoder, DynamicImage, ImageDecoder as _, ImageOutputFormat};
+        use image::{codecs::png::PngDecoder, DynamicImage, ImageDecoder as _, ImageFormat};
 
         let buffer = get_animated_buffer();
         let decoder = Decoder::new(&buffer).unwrap();
@@ -332,12 +332,13 @@ mod tests {
 
         let mut buf = Cursor::new(Vec::new());
         DynamicImage::ImageRgba8(image)
-            .write_to(&mut buf, ImageOutputFormat::Png)
+            .write_to(&mut buf, ImageFormat::Png)
             .unwrap();
 
         let buf = buf.into_inner();
+        let cursor = Cursor::new(&buf);
 
-        let png_decoder = PngDecoder::new(&buf[..]).unwrap();
+        let png_decoder = PngDecoder::new(cursor).unwrap();
         assert_eq!(png_decoder.dimensions(), (400, 400));
     }
 
