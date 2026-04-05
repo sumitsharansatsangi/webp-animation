@@ -314,12 +314,11 @@ pub(crate) struct ConfigContainer {
 impl ConfigContainer {
     pub fn new(config: &EncodingConfig) -> Result<Self, Error> {
         let mut webp_config = unsafe {
-            let mut cfg = mem::zeroed();
-            let ok = webp::WebPConfigInit(&mut cfg);
-            if ok == 0 {
+            let mut config = mem::zeroed();
+            if webp::WebPConfigInit(&mut config) == 0 {
                 return Err(Error::InvalidEncodingConfig);
             }
-            cfg
+            config
         };
 
         config.apply_to(&mut webp_config);

@@ -334,7 +334,7 @@ mod tests {
     fn test_decode_to_image() {
         use std::io::Cursor;
 
-        use image::{DynamicImage, ImageDecoder as _, ImageFormat, codecs::png::PngDecoder};
+        use image::{codecs::png::PngDecoder, DynamicImage, ImageDecoder as _, ImageFormat};
 
         let buffer = get_animated_buffer();
         let decoder = Decoder::new(&buffer).unwrap();

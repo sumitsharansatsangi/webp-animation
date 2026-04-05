@@ -1,6 +1,26 @@
 # Changelog
 
-[View unreleased changes](https://github.com/blaind/webp-animation/compare/v0.9.0...main)
+[View unreleased changes](https://github.com/blaind/webp-animation/compare/v0.10.0...main)
+
+## Version 0.10.0 (2026-04-04)
+
+[Compare changelog](https://github.com/blaind/webp-animation/compare/v0.9.0...v0.10.0)
+
+### Fixed
+
+- Fix null pointer dereference in `WebPData::as_slice` when data is uninitialized ([#26])
+- Fix `WebPConfigInit` return value not being checked in `encoder_config.rs`
+- Fix `#[cfg(features = "image")]` typo in decode example (should be `feature`)
+
+### Changed
+
+- Update `libwebp-sys2` from 0.1.9 to 0.2 (bundles libwebp 1.5.0, fixes CVE-2023-4863) ([#38])
+- Update `image` dependency from 0.24 to 0.25
+- Update `imageproc` dev dependency from 0.23 to 0.26
+- Update `env_logger` dev dependency from 0.10 to 0.11
+
+[#26]: https://github.com/blaind/webp-animation/issues/26
+[#38]: https://github.com/blaind/webp-animation/issues/38
 
 ## Version 0.9.0 (2023-10-07)
 
